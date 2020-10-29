@@ -22,6 +22,8 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+        self.capacity = capacity
+        self.array = [None] * capacity
 
 
     def get_num_slots(self):
@@ -52,7 +54,7 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
-
+        pass
         # Your code here
 
 
@@ -62,6 +64,14 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
+        hash = 5381
+
+        byte_array = str.encode(key)
+
+        for arr in byte_array:
+            hash = ((hash * 33) ^ arr) % 0x100000000
+        return hash
+
         # Your code here
 
 
@@ -81,8 +91,10 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        key_hash = self.djb2(key)
+        idx = key_hash % self.capacity
+        new_hash_table_entry = HashTableEntry(key, value)
+        self.array[idx] = new_hash_table_entry
 
     def delete(self, key):
         """
@@ -92,7 +104,13 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        key_hash = self.djb2(key)
+        idx = key_hash % self.capacity
+        existing_hash_table_entry = self.array[idx]
+        if existing_hash_table_entry != None:
+            self.array[idx] = None
+        else:
+            return "This hash table entry does not exist"
 
 
     def get(self, key):
@@ -103,7 +121,13 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        key_hash = self.djb2(key)
+        idx = key_hash % self.capacity
+        existing_hash_table_entry = self.array[idx]
+        if existing_hash_table_entry:
+            return existing_hash_table_entry.value
+        else:
+            return None
 
 
     def resize(self, new_capacity):
